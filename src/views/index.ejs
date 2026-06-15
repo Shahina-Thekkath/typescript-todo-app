@@ -1,0 +1,198 @@
+<%- include('partials/header') %>
+
+  <!-- SIDEBAR -->
+  <nav class="col-md-2 d-none d-md-block sidebar py-4 px-3">
+    <div class="d-flex align-items-center gap-2 mb-4 px-2">
+      <span class="fs-4">✅</span>
+      <span class="text-white fw-bold fs-5">TodoApp</span>
+    </div>
+
+    <p class="text-secondary text-uppercase fw-semibold" style="font-size:0.7rem; letter-spacing:0.08em">Navigation</p>
+    <ul class="nav flex-column gap-1">
+      <li class="nav-item">
+        <a href="/?filter=all" class="nav-link d-flex align-items-center gap-2 <%= filter === 'all' ? 'active' : '' %>">
+          <i class="bi bi-list-task"></i> All Todos
+          <span class="badge bg-secondary ms-auto"><%= totalCount %></span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/?filter=pending" class="nav-link d-flex align-items-center gap-2 <%= filter === 'pending' ? 'active' : '' %>">
+          <i class="bi bi-hourglass-split"></i> Pending
+          <span class="badge bg-warning text-dark ms-auto"><%= pendingCount %></span>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/?filter=completed" class="nav-link d-flex align-items-center gap-2 <%= filter === 'completed' ? 'active' : '' %>">
+          <i class="bi bi-check-circle"></i> Completed
+          <span class="badge bg-success ms-auto"><%= completedCount %></span>
+        </a>
+      </li>
+    </ul>
+
+    <hr class="border-secondary mt-4" />
+    <p class="text-secondary px-2" style="font-size:0.75rem">
+      Data from JSONPlaceholder API<br/>
+      TypeScript · Express · EJS · Bootstrap
+    </p>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="col-md-10 py-4 px-4">
+
+    <!-- PAGE HEADING -->
+    <div class="d-flex align-items-center justify-content-between mb-4">
+      <div>
+        <h2 class="fw-bold mb-1">
+          <% if (filter === 'completed') { %>Completed Todos
+          <% } else if (filter === 'pending') { %>Pending Todos
+          <% } else { %>All Todos<% } %>
+        </h2>
+        <p class="text-muted mb-0" style="font-size:0.875rem">Fetched live from JSONPlaceholder REST API using async/await</p>
+      </div>
+      <!-- Mobile filter dropdown -->
+      <div class="d-md-none">
+        <div class="dropdown">
+          <button class="btn btn-outline-secondary btn-sm dropdown-toggle" data-bs-toggle="dropdown">Filter</button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="/?filter=all">All</a></li>
+            <li><a class="dropdown-item" href="/?filter=pending">Pending</a></li>
+            <li><a class="dropdown-item" href="/?filter=completed">Completed</a></li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- ERROR ALERT -->
+    <% if (error) { %>
+      <div class="alert alert-danger d-flex align-items-center gap-2" role="alert">
+        <i class="bi bi-exclamation-triangle-fill"></i>
+        <%= error %>
+      </div>
+    <% } %>
+
+    <!-- STAT CARDS -->
+    <div class="row g-3 mb-4">
+      <div class="col-6 col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <p class="text-muted mb-1" style="font-size:0.8rem">Total Tasks</p>
+            <h3 class="fw-bold text-primary mb-0"><%= totalCount %></h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-6 col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <p class="text-muted mb-1" style="font-size:0.8rem">Completed</p>
+            <h3 class="fw-bold text-success mb-0"><%= completedCount %></h3>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-md-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <p class="text-muted mb-1" style="font-size:0.8rem">Pending</p>
+            <h3 class="fw-bold text-warning mb-0"><%= pendingCount %></h3>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADD TASK FORM -->
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body">
+        <h6 class="card-title text-muted text-uppercase fw-semibold mb-3" style="font-size:0.75rem; letter-spacing:0.08em">
+          <i class="bi bi-plus-circle me-1"></i> Add New Task
+        </h6>
+        <form action="/add" method="POST" class="d-flex gap-2">
+          <input
+            type="text"
+            name="title"
+            class="form-control"
+            placeholder="What needs to be done?"
+            autocomplete="off"
+            required
+          />
+          <button type="submit" class="btn btn-primary px-4 text-nowrap">
+            <i class="bi bi-plus-lg me-1"></i> Add Task
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- FILTER TABS + COUNT -->
+    <div class="d-flex align-items-center justify-content-between mb-3">
+      <ul class="nav nav-pills gap-1">
+        <li class="nav-item">
+          <a href="/?filter=all" class="nav-link py-1 px-3 <%= filter === 'all' ? 'active' : '' %>">All</a>
+        </li>
+        <li class="nav-item">
+          <a href="/?filter=pending" class="nav-link py-1 px-3 <%= filter === 'pending' ? 'active' : '' %>">Pending</a>
+        </li>
+        <li class="nav-item">
+          <a href="/?filter=completed" class="nav-link py-1 px-3 <%= filter === 'completed' ? 'active' : '' %>">Completed</a>
+        </li>
+      </ul>
+      <small class="text-muted"><%= todos.length %> item<%= todos.length !== 1 ? 's' : '' %></small>
+    </div>
+
+    <!-- TODO LIST -->
+    <% if (todos.length === 0) { %>
+      <div class="text-center py-5 text-muted">
+        <i class="bi bi-<%= filter === 'completed' ? 'emoji-smile' : 'inbox' %> display-4 d-block mb-3"></i>
+        <h5><%= filter === 'completed' ? 'Nothing completed yet' : 'All caught up!' %></h5>
+        <p class="mb-0"><%= filter === 'completed' ? 'Complete some tasks to see them here.' : 'Add a task above to get started.' %></p>
+      </div>
+    <% } %>
+
+    <div class="d-flex flex-column gap-2">
+      <% todos.forEach(function(todo) { %>
+        <div class="card border-0 shadow-sm todo-card <%= todo.completed ? 'done' : '' %>">
+          <div class="card-body py-3 d-flex align-items-center gap-3">
+
+            <!-- CHECKBOX TOGGLE -->
+            <form action="/toggle/<%= todo.id %>" method="POST" class="mb-0">
+              <input type="hidden" name="completed" value="<%= todo.completed %>" />
+              <button
+                type="submit"
+                class="btn btn-sm check-btn <%= todo.completed ? 'btn-primary' : 'btn-outline-secondary' %>"
+                title="Toggle status"
+              >
+                <% if (todo.completed) { %><i class="bi bi-check" style="font-size:13px"></i><% } %>
+              </button>
+            </form>
+
+            <!-- TITLE + META -->
+            <div class="flex-grow-1 min-width-0">
+              <div class="todo-title fw-medium" style="font-size:0.9rem"><%= todo.title %></div>
+              <div class="d-flex align-items-center gap-2 mt-1">
+                <small class="text-muted">#<%= todo.id %></small>
+                <small class="text-muted">·</small>
+                <small class="text-muted">User <%= todo.userId %></small>
+                <small class="text-muted">·</small>
+                <span class="badge <%= todo.completed ? 'bg-success' : 'bg-primary' %>" style="font-size:0.68rem">
+                  <%= todo.completed ? 'Done' : 'Pending' %>
+                </span>
+              </div>
+            </div>
+
+            <!-- ACTIONS -->
+            <div class="d-flex gap-2">
+              <a href="/todo/<%= todo.id %>" class="btn btn-sm btn-outline-secondary">
+                <i class="bi bi-eye me-1"></i>View
+              </a>
+              <form action="/delete/<%= todo.id %>" method="POST" class="mb-0">
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </form>
+            </div>
+
+          </div>
+        </div>
+      <% }) %>
+    </div>
+
+  </main>
+
+<%- include('partials/footer') %>

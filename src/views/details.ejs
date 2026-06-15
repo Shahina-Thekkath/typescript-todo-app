@@ -1,0 +1,158 @@
+<%- include('partials/header') %>
+
+  <!-- SIDEBAR -->
+  <nav class="col-md-2 d-none d-md-block sidebar py-4 px-3">
+    <div class="d-flex align-items-center gap-2 mb-4 px-2">
+      <span class="fs-4">✅</span>
+      <span class="text-white fw-bold fs-5">TodoApp</span>
+    </div>
+    <p class="text-secondary text-uppercase fw-semibold" style="font-size:0.7rem; letter-spacing:0.08em">Navigation</p>
+    <ul class="nav flex-column gap-1">
+      <li class="nav-item">
+        <a href="/?filter=all" class="nav-link d-flex align-items-center gap-2">
+          <i class="bi bi-list-task"></i> All Todos
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/?filter=pending" class="nav-link d-flex align-items-center gap-2">
+          <i class="bi bi-hourglass-split"></i> Pending
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="/?filter=completed" class="nav-link d-flex align-items-center gap-2">
+          <i class="bi bi-check-circle"></i> Completed
+        </a>
+      </li>
+    </ul>
+    <hr class="border-secondary mt-4" />
+    <p class="text-secondary px-2" style="font-size:0.75rem">
+      TypeScript · Express · EJS · Bootstrap
+    </p>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <main class="col-md-10 py-4 px-4">
+
+    <a href="/" class="btn btn-outline-secondary btn-sm mb-4">
+      <i class="bi bi-arrow-left me-1"></i> Back to all todos
+    </a>
+
+    <% if (error) { %>
+      <div class="alert alert-danger d-flex align-items-center gap-2">
+        <i class="bi bi-exclamation-triangle-fill"></i> <%= error %>
+      </div>
+    <% } %>
+
+    <% if (todo) { %>
+
+      <div class="row g-4">
+
+        <!-- DETAIL CARD -->
+        <div class="col-lg-7">
+          <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+
+              <!-- STATUS BADGE -->
+              <span class="badge <%= todo.completed ? 'bg-success' : 'bg-primary' %> mb-3">
+                <%= todo.completed ? '✅ Completed' : '⏳ Pending' %>
+              </span>
+
+              <!-- TITLE -->
+              <h3 class="fw-bold mb-4" style="line-height:1.35"><%= todo.title %></h3>
+
+              <!-- FIELDS -->
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span class="text-muted">Todo ID</span>
+                  <span class="fw-medium">#<%= todo.id %></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span class="text-muted">User ID</span>
+                  <span class="fw-medium">User <%= todo.userId %></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span class="text-muted">Status</span>
+                  <span class="fw-medium"><%= todo.completed ? 'Completed' : 'Pending' %></span>
+                </li>
+                <li class="list-group-item d-flex justify-content-between px-0">
+                  <span class="text-muted">Data Source</span>
+                  <span class="fw-medium">JSONPlaceholder API</span>
+                </li>
+              </ul>
+
+              <!-- ACTION BUTTONS -->
+              <div class="d-flex gap-2 mt-4">
+                <form action="/toggle/<%= todo.id %>" method="POST" class="flex-fill">
+                  <input type="hidden" name="completed" value="<%= todo.completed %>" />
+                  <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-<%= todo.completed ? 'arrow-counterclockwise' : 'check-circle' %> me-1"></i>
+                    <%= todo.completed ? 'Mark as Pending' : 'Mark as Complete' %>
+                  </button>
+                </form>
+                <form action="/delete/<%= todo.id %>" method="POST" class="flex-fill">
+                  <button type="submit" class="btn btn-outline-danger w-100">
+                    <i class="bi bi-trash me-1"></i> Delete
+                  </button>
+                </form>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- INFO PANEL -->
+        <div class="col-lg-5">
+          <div class="card border-0 shadow-sm bg-light">
+            <div class="card-body p-4">
+              <h6 class="fw-semibold text-muted text-uppercase mb-3" style="font-size:0.75rem; letter-spacing:0.08em">
+                <i class="bi bi-info-circle me-1"></i> About this data
+              </h6>
+              <p class="text-muted mb-3" style="font-size:0.875rem">
+                This todo was fetched from the <strong>JSONPlaceholder</strong> free REST API
+                using <code>async/await</code> in TypeScript.
+              </p>
+              <p class="text-muted mb-0" style="font-size:0.875rem">
+                Changes (toggle, delete) are sent back to the API but are not permanently stored —
+                JSONPlaceholder is a mock API used for learning and testing.
+              </p>
+            </div>
+          </div>
+
+          <div class="card border-0 shadow-sm mt-3">
+            <div class="card-body p-4">
+              <h6 class="fw-semibold text-muted text-uppercase mb-3" style="font-size:0.75rem; letter-spacing:0.08em">
+                <i class="bi bi-diagram-3 me-1"></i> Dependency chain
+              </h6>
+              <div class="d-flex flex-column gap-2" style="font-size:0.8rem">
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-primary">Route</span>
+                  <i class="bi bi-arrow-right text-muted"></i>
+                  <span class="text-muted">todoRoutes.ts</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-success">Manager</span>
+                  <i class="bi bi-arrow-right text-muted"></i>
+                  <span class="text-muted">TodoManager.ts</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-warning text-dark">Repo</span>
+                  <i class="bi bi-arrow-right text-muted"></i>
+                  <span class="text-muted">TodoRepository.ts</span>
+                </div>
+                <div class="d-flex align-items-center gap-2">
+                  <span class="badge bg-danger">Service</span>
+                  <i class="bi bi-arrow-right text-muted"></i>
+                  <span class="text-muted">ApiService.ts</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    <% } %>
+
+  </main>
+
+<%- include('partials/footer') %>
