@@ -17,7 +17,7 @@ import { IApiService } from "../services/IApiServices";
 import { TodoRequest } from "../models/todoRequest";
 import { TodoResponse } from "../models/todoResponse";
 
-export class TodoRespository {
+export class TodoRepository {
   // 📘 LEARN: DEPENDENCY INJECTION
   // `private apiService: IApiService` — the dependency is INJECTED
   // through the constructor instead of being created inside.
